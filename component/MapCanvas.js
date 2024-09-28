@@ -13,7 +13,11 @@ const FreehandDrawingApp = () => {
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onPanResponderMove: (evt, gestureState) => {
-      const newPoint = formatCoordinate(gestureState.moveX, gestureState.moveY);
+      // Get the correct touch position relative to the map area
+      const newX = gestureState.moveX;
+      const newY = gestureState.moveY - (height * 0.2); // Adjust for the 20% height taken by the search area or any padding
+
+      const newPoint = formatCoordinate(newX, newY);
 
       if (currentPath === '') {
         // Ensure the path starts with a valid 'M' (move to)
@@ -41,7 +45,7 @@ const FreehandDrawingApp = () => {
   return (
     <View style={styles.container}>
       {/* Floor Plan Image */}
-      <View style={styles.floorPlanContainer}>
+      <View style={styles.mapArea}>
         <Image
           source={require('../assets/floorplan.jpg')} // Replace with your floor plan image
           style={styles.floorPlan}
@@ -71,10 +75,10 @@ const FreehandDrawingApp = () => {
             />
           )}
         </Svg>
-      </View>
 
-      {/* Drawing surface for touch gestures */}
-      <View {...panResponder.panHandlers} style={styles.drawingOverlay} />
+        {/* Drawing surface for touch gestures */}
+        <View {...panResponder.panHandlers} style={styles.drawingOverlay} />
+      </View>
 
       {/* Clear Button */}
       <View style={styles.controlsContainer}>
@@ -91,25 +95,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  floorPlanContainer: {
-    width: width,
-    height: height,
+  mapArea: {
+    flex: 8,  // 80% of the screen height
+    width: '100%',
+    backgroundColor: "#fff",
   },
   floorPlan: {
-    width: width,
-    height: height,
+    width: '100%',
+    height: '100%',
     position: 'absolute',
   },
   drawingOverlay: {
-    position: 'absolute',
     width: '100%',
     height: '100%',
+    position: 'absolute',
   },
   controlsContainer: {
-    position: 'absolute',
-    bottom: 30,
-    left: 0,
-    right: 0,
+    flex: 2,  // 20% of the screen height for the buttons
+    justifyContent: 'center',
     alignItems: 'center',
   },
   clearButton: {
