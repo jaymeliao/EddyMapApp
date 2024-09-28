@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Text,
   Button,
-  Dimensions,  // Import Dimensions to get the screen size
+  Dimensions, // Import Dimensions to get the screen size
 } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
@@ -70,7 +70,9 @@ const MapCanvasSwitchable = () => {
 
   // Function to switch to the previous image
   const switchToPreviousImage = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
+    setCurrentImageIndex(
+      (prevIndex) => (prevIndex - 1 + images.length) % images.length
+    );
   };
 
   return (
@@ -152,7 +154,7 @@ const styles = StyleSheet.create({
   clearButtonText: {
     color: "white",
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 15,
   },
 });
 
