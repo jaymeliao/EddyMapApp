@@ -4,7 +4,7 @@ import Svg, { Path } from 'react-native-svg';
 
 const { width, height } = Dimensions.get('window');
 
-const FreehandDrawingApp = () => {
+const MapCanvas = () => {
   const [currentPath, setCurrentPath] = useState(''); // Current freehand drawing path
   const [paths, setPaths] = useState([]); // Array to store all drawings
 
@@ -128,4 +128,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FreehandDrawingApp;
+export default MapCanvas;

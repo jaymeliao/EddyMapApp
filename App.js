@@ -1,15 +1,16 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, TextInput } from "react-native";
 import MapCanvas from "./component/MapCanvas";
+import MapCanvasSwitchable from "./component/MapCanvasSwitchable";
 
 export default function App() {
   return (
     <View style={styles.container}>
       <View style={styles.searchArea}>
-        <Text>hello</Text>
+        <Text>To be Continue: Search Map by floor number etc</Text>
       </View>
       <View style={styles.mapArea}>
-        <MapCanvas />
+        <MapCanvasSwitchable />
       </View>
     </View>
   );
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
   },
   searchArea: {
     flex: 2,  // 20% of the screen height
-    backgroundColor: "#ff0000",
+    backgroundColor: "#ffffff",
     justifyContent: "center",
     alignItems: "center",
   },
