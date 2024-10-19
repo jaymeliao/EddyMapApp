@@ -108,12 +108,6 @@ const MapSwitchableZoomableControlPanel = forwardRef(
 
     return (
       <View style={styles.container}>
-        {/* Ensure the zoom controls are above the rest of the content */}
-        <View style={styles.zoomControls}>
-          <Button title="Zoom In" onPress={zoomIn} />
-          <Button title="Zoom Out" onPress={zoomOut} />
-        </View>
-
         <View style={styles.mapArea}>
           <Image
             source={images[currentImageIndex]}
@@ -163,7 +157,7 @@ const MapSwitchableZoomableControlPanel = forwardRef(
             onTouchEnd={handleOverlayPress} // Add touch event for overlay
           />
 
-          {textPosition && (
+          {/* {textPosition && (
             <TextInput
               style={[
                 styles.textInput,
@@ -178,7 +172,12 @@ const MapSwitchableZoomableControlPanel = forwardRef(
               placeholder="Enter text"
               autoFocus
             />
-          )}
+          )} */}
+        </View>
+
+        <View style={styles.zoomControls}>
+          <Button title="Zoom In" onPress={zoomIn} />
+          <Button title="Zoom Out" onPress={zoomOut} />
         </View>
       </View>
     );
@@ -193,12 +192,10 @@ const styles = StyleSheet.create({
   zoomControls: {
     // Place zoom buttons in an absolute position at the top of the screen
     position: "absolute",
-    top: 10,
-    left: 10,
-    right: 10,
     zIndex: 2, // Ensure buttons are on top
     flexDirection: "row",
     justifyContent: "space-between",
+    bottom: 50,
   },
   mapArea: {
     flex: 1,
