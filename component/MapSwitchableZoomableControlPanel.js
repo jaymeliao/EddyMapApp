@@ -7,11 +7,10 @@ import {
   TextInput,
   Text,
   Button,
-  Dimensions, // Import Dimensions here
+  Dimensions,
 } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
-// Get the screen height and width
 const { height, width } = Dimensions.get("window");
 
 const MapSwitchableZoomableControlPanel = forwardRef(
@@ -99,19 +98,17 @@ const MapSwitchableZoomableControlPanel = forwardRef(
       }
     };
 
-    //   const zoomIn = () => {
-    //     setScale((prevScale) => Math.min(prevScale + 0.1, 5)); // Limit max zoom level
-    //   };
+    const zoomIn = () => {
+      setScale((prevScale) => Math.min(prevScale * 1.2, 5)); // Cap at a max scale of 5x
+    };
 
-    //   const zoomOut = () => {
-    //     setScale((prevScale) => Math.max(prevScale - 0.1, 1)); // Limit min zoom level
-    //   };
-
-    const zoomIn = () => setScale((prevScale) => prevScale * 1.2);
-    const zoomOut = () => setScale((prevScale) => Math.max(prevScale * 0.8, 1)); // Limit the zoom-out
+    const zoomOut = () => {
+      setScale((prevScale) => Math.max(prevScale * 0.8, 1)); // Minimum scale of 1x
+    };
 
     return (
       <View style={styles.container}>
+        {/* Ensure the zoom controls are above the rest of the content */}
         <View style={styles.zoomControls}>
           <Button title="Zoom In" onPress={zoomIn} />
           <Button title="Zoom Out" onPress={zoomOut} />
@@ -121,13 +118,14 @@ const MapSwitchableZoomableControlPanel = forwardRef(
           <Image
             source={images[currentImageIndex]}
             style={[
-              styles.floorPlan,
               {
                 transform: [
-                  { scale },
-                  { translateX: pan.x }, // Apply panning
-                  { translateY: pan.y }, // Apply panning
+                  { scale }, // Apply scale transform for zooming
+                  { translateX: pan.x },
+                  { translateY: pan.y },
                 ],
+                width: width, // Set width and height as base size
+                height: height,
               },
             ]}
             resizeMode="contain"
@@ -193,21 +191,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   zoomControls: {
+    // Place zoom buttons in an absolute position at the top of the screen
+    position: "absolute",
+    top: 10,
+    left: 10,
+    right: 10,
+    zIndex: 2, // Ensure buttons are on top
     flexDirection: "row",
     justifyContent: "space-between",
-    padding: 10,
-    backgroundColor: "#f0f0f0",
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
   },
   mapArea: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  floorPlan: {
-    width: "100%",
-    height: "100%",
   },
   drawingOverlay: {
     ...StyleSheet.absoluteFillObject,
