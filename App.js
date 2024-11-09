@@ -19,12 +19,11 @@ export default function App() {
   };
 
   const switchToNextImage = () => {
-    console.log("Next Image Button Pressed"); // Debugging log
+    
     setCurrentImageIndex((prevIndex) => (prevIndex + 1) % 9);
   };
 
   const switchToPreviousImage = () => {
-    console.log("Previous Image Button Pressed"); // Debugging log
     setCurrentImageIndex((prevIndex) => (prevIndex - 1 + 9) % 9);
   };
 

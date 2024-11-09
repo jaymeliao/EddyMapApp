@@ -55,6 +55,8 @@ const MapSwitchableZoomableControlPanel = forwardRef(
       return { scaledWidth, scaledHeight };
     };
 
+    const lerp = (start, end, t) => start * (1 - t) + end * t;
+
     const panResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderMove: (evt, gestureState) => {
@@ -69,20 +71,27 @@ const MapSwitchableZoomableControlPanel = forwardRef(
             setCurrentPath((prevPath) => `${prevPath} L${newPoint}`);
           }
         } else {
+          const scaledDx = gestureState.dx / scale;
+          const scaledDy = gestureState.dy / scale;
+
+          // Add a small threshold to prevent tiny shakes
+          if (Math.abs(scaledDx) < 2 && Math.abs(scaledDy) < 2) return;
+
           const { scaledWidth, scaledHeight } = getImageDimensions();
 
-          // Calculate new position
-          const newX = gestureState.dx + offset.x;
-          const newY = gestureState.dy + offset.y;
+          // Calculate smoothed new position
+          const targetX = scaledDx + offset.x;
+          const targetY = scaledDy + offset.y;
 
-          // Limit panning
           const maxX = Math.max(0, (scaledWidth - width) / 2);
           const maxY = Math.max(0, (scaledHeight - height) / 2);
 
           setPan({
-            x: Math.min(Math.max(newX, -maxX), maxX),
-            y: Math.min(Math.max(newY, -maxY), maxY),
+            x: Math.min(Math.max(lerp(pan.x, targetX, 0.7), -maxX), maxX), // Increase to 0.3 Smoothing, more is better 
+            y: Math.min(Math.max(lerp(pan.y, targetY, 0.7), -maxY), maxY), // Increase to 0.3 Smoothing
           });
+
+          setOffset({ x: pan.x, y: pan.y });
         }
       },
       onPanResponderRelease: () => {
@@ -90,7 +99,6 @@ const MapSwitchableZoomableControlPanel = forwardRef(
           setPaths([...paths, currentPath]);
           setCurrentPath("");
         } else {
-          // Update the offset for panning
           setOffset({ x: pan.x, y: pan.y });
         }
       },
