@@ -1,4 +1,11 @@
-import { StyleSheet, View, Text, Button, TouchableOpacity, SafeAreaView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Button,
+  TouchableOpacity,
+  SafeAreaView,
+} from "react-native";
 import MapSwitchableZoomableControlPanel from "./component/MapSwitchableZoomableControlPanel";
 import React, { useState, createRef } from "react";
 
@@ -29,13 +36,11 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.contralArea}>
+      <View style={styles.controlArea}>
         <TouchableOpacity style={styles.clearButton} onPress={clearAnnotations}>
           <Text style={styles.clearButtonText}>Clear Annotations</Text>
         </TouchableOpacity>
         <Button title="Previous Image" onPress={switchToPreviousImage} />
-
-        {/* Next Image Button */}
         <Button title="Next Image" onPress={switchToNextImage} />
 
         {/* Annotation Mode Toggle */}
@@ -60,14 +65,13 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f38020",
   },
-  contralArea: {
+  controlArea: {
     flex: 2, // 20% of the screen height
     backgroundColor: "#ffffff",
     justifyContent: "center",
     alignItems: "center",
-    zIndex:3
+    zIndex: 3,
   },
   mapArea: {
     flex: 8, // 80% of the screen height
@@ -85,9 +89,5 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     fontSize: 15,
-  },
-
-  annotationMode: {
-    marginTop: 10,
   },
 });

@@ -8,6 +8,7 @@ import {
   Text,
   Button,
   Dimensions,
+  SafeAreaView,
 } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
@@ -48,6 +49,12 @@ const MapSwitchableZoomableControlPanel = forwardRef(
 
     const formatCoordinate = (x, y) => `${x},${y}`;
 
+    const getImageDimensions = () => {
+      const scaledWidth = width * scale;
+      const scaledHeight = height * scale;
+      return { scaledWidth, scaledHeight };
+    };
+
     const panResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderMove: (evt, gestureState) => {
@@ -62,10 +69,19 @@ const MapSwitchableZoomableControlPanel = forwardRef(
             setCurrentPath((prevPath) => `${prevPath} L${newPoint}`);
           }
         } else {
-          // Handle panning the image in move mode
+          const { scaledWidth, scaledHeight } = getImageDimensions();
+
+          // Calculate new position
+          const newX = gestureState.dx + offset.x;
+          const newY = gestureState.dy + offset.y;
+
+          // Limit panning
+          const maxX = Math.max(0, (scaledWidth - width) / 2);
+          const maxY = Math.max(0, (scaledHeight - height) / 2);
+
           setPan({
-            x: gestureState.dx + offset.x,
-            y: gestureState.dy + offset.y,
+            x: Math.min(Math.max(newX, -maxX), maxX),
+            y: Math.min(Math.max(newY, -maxY), maxY),
           });
         }
       },
@@ -99,7 +115,7 @@ const MapSwitchableZoomableControlPanel = forwardRef(
     };
 
     const zoomIn = () => {
-      setScale((prevScale) => Math.min(prevScale * 1.2, 5)); // Cap at a max scale of 5x
+      setScale((prevScale) => Math.min(prevScale * 1.2, 3)); // Cap at a max scale of 5x
     };
 
     const zoomOut = () => {
@@ -107,7 +123,7 @@ const MapSwitchableZoomableControlPanel = forwardRef(
     };
 
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.mapArea}>
           <Image
             source={images[currentImageIndex]}
@@ -156,30 +172,13 @@ const MapSwitchableZoomableControlPanel = forwardRef(
             style={styles.drawingOverlay}
             onTouchEnd={handleOverlayPress} // Add touch event for overlay
           />
-
-          {/* {textPosition && (
-            <TextInput
-              style={[
-                styles.textInput,
-                {
-                  left: textPosition.split(",")[0] - 50,
-                  top: textPosition.split(",")[1] - 20,
-                },
-              ]} // Position the text input
-              value={text}
-              onChangeText={setText}
-              onSubmitEditing={handleTextInputSubmit}
-              placeholder="Enter text"
-              autoFocus
-            />
-          )} */}
         </View>
 
         <View style={styles.zoomControls}>
           <Button title="Zoom In" onPress={zoomIn} />
           <Button title="Zoom Out" onPress={zoomOut} />
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 );
@@ -190,12 +189,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   zoomControls: {
-    // Place zoom buttons in an absolute position at the top of the screen
+    // Place zoom buttons in an absolute position at the bottom of the screen
     position: "absolute",
     zIndex: 2, // Ensure buttons are on top
     flexDirection: "row",
     justifyContent: "space-between",
     bottom: 50,
+    left: 10,
+    right: 10,
   },
   mapArea: {
     flex: 1,
@@ -205,14 +206,6 @@ const styles = StyleSheet.create({
   drawingOverlay: {
     ...StyleSheet.absoluteFillObject,
     zIndex: 1,
-  },
-  textInput: {
-    position: "absolute",
-    borderBottomWidth: 1,
-    borderBottomColor: "blue",
-    width: 100,
-    padding: 5,
-    zIndex: 2,
   },
   annotationText: {
     position: "absolute",
