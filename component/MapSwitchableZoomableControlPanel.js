@@ -4,13 +4,14 @@ import {
   PanResponder,
   Image,
   StyleSheet,
-  TextInput,
+  TouchableOpacity,
   Text,
   Button,
   Dimensions,
   SafeAreaView,
 } from "react-native";
 import Svg, { Path } from "react-native-svg";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 const { height, width } = Dimensions.get("window");
 
@@ -62,7 +63,7 @@ const MapSwitchableZoomableControlPanel = forwardRef(
       onPanResponderMove: (evt, gestureState) => {
         if (isAnnotationMode) {
           const newX = gestureState.moveX;
-          const newY = gestureState.moveY - height * 0.2;
+          const newY = gestureState.moveY - height * 0.25*0; //adjust this for finger tip and pen
           const newPoint = formatCoordinate(newX, newY);
 
           if (currentPath === "") {
@@ -87,7 +88,7 @@ const MapSwitchableZoomableControlPanel = forwardRef(
           const maxY = Math.max(0, (scaledHeight - height) / 2);
 
           setPan({
-            x: Math.min(Math.max(lerp(pan.x, targetX, 0.7), -maxX), maxX), // Increase to 0.3 Smoothing, more is better 
+            x: Math.min(Math.max(lerp(pan.x, targetX, 0.7), -maxX), maxX), // Increase to 0.3 Smoothing, more is better
             y: Math.min(Math.max(lerp(pan.y, targetY, 0.7), -maxY), maxY), // Increase to 0.3 Smoothing
           });
 
@@ -183,8 +184,12 @@ const MapSwitchableZoomableControlPanel = forwardRef(
         </View>
 
         <View style={styles.zoomControls}>
-          <Button title="Zoom In" onPress={zoomIn} />
-          <Button title="Zoom Out" onPress={zoomOut} />
+          <TouchableOpacity onPress={zoomIn} style={styles.button}>
+            <Icon name="zoom-in" size={30} color="#000" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={zoomOut} style={styles.button}>
+            <Icon name="zoom-out" size={30} color="#000" />
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     );

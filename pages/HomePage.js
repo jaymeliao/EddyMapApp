@@ -9,6 +9,7 @@ import {
 import MapSwitchableZoomableControlPanel from "../component/MapSwitchableZoomableControlPanel";
 import React, { useState, createRef } from "react";
 import { useTheme } from "react-native-paper";
+import Icon from "react-native-vector-icons/MaterialIcons"; // Choose your preferred icon library
 
 export default function HomePage() {
   const [isAnnotationMode, setIsAnnotationMode] = useState(true);
@@ -37,13 +38,30 @@ export default function HomePage() {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.primary }]}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
       <View style={styles.controlArea}>
-        <TouchableOpacity style={styles.clearButton} onPress={clearAnnotations}>
-          <Text style={styles.clearButtonText}>Clear Annotations</Text>
-        </TouchableOpacity>
-        <Button title="Previous Image" onPress={switchToPreviousImage} />
-        <Button title="Next Image" onPress={switchToNextImage} />
+        <View style={styles.float_right}>
+          <TouchableOpacity
+            style={styles.clearButton}
+            onPress={clearAnnotations}
+          >
+            <Icon name="delete" size={24} color="#ff6666" />{" "}
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.space_between}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={switchToPreviousImage}
+          >
+            <Icon name="arrow-back" size={30} color="#000" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={switchToNextImage}>
+            <Icon name="arrow-forward" size={30} color="#000" />
+          </TouchableOpacity>
+        </View>
 
         {/* Annotation Mode Toggle */}
         <View style={styles.annotationMode}>
@@ -53,8 +71,6 @@ export default function HomePage() {
           />
         </View>
       </View>
-
-
 
       <View style={styles.mapArea}>
         <MapSwitchableZoomableControlPanel
@@ -72,26 +88,24 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   controlArea: {
-   
-    backgroundColor: "red",
-    justifyContent: "center",
-    alignItems: "center",
     zIndex: 3,
   },
+  space_between: {
+    justifyContent: "space-between",
+    flexDirection: "row",
+  },
   mapArea: {
-    flex: 1, // 80% of the screen height
-    backgroundColor: "green",
+    flex: 1,
+  },
+
+  float_right: {
+    justifyContent: "flex-end",
   },
   clearButton: {
-    backgroundColor: "#ff6666",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  clearButtonText: {
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 15,
+    backgroundColor: "#000",
+    width: 50,
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
