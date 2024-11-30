@@ -63,7 +63,7 @@ const MapSwitchableZoomableControlPanel = forwardRef(
       onPanResponderMove: (evt, gestureState) => {
         if (isAnnotationMode) {
           const newX = gestureState.moveX;
-          const newY = gestureState.moveY - height * 0.25*0; //adjust this for finger tip and pen
+          const newY = gestureState.moveY - height * 0.20; //adjust this for finger tip and pen
           const newPoint = formatCoordinate(newX, newY);
 
           if (currentPath === "") {

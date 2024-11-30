@@ -47,7 +47,7 @@ export default function HomePage() {
             style={styles.clearButton}
             onPress={clearAnnotations}
           >
-            <Icon name="delete" size={24} color="#ff6666" />{" "}
+            <Icon name="delete" size={24} color="#ff6666" />
           </TouchableOpacity>
         </View>
 
