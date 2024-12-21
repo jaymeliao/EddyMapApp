@@ -10,6 +10,8 @@ import MapSwitchableZoomableControlPanel from "../component/MapSwitchableZoomabl
 import React, { useState, createRef } from "react";
 import { useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialIcons"; // Choose your preferred icon library
+import AudioRecorder from "../component/AudioRecorder";
+
 
 export default function HomePage() {
   const [isAnnotationMode, setIsAnnotationMode] = useState(true);
@@ -50,6 +52,7 @@ export default function HomePage() {
             <Icon name="delete" size={24} color="#ff6666" />
           </TouchableOpacity>
         </View>
+   
 
         <View style={styles.space_between}>
           <TouchableOpacity
@@ -79,6 +82,9 @@ export default function HomePage() {
           isAnnotationMode={isAnnotationMode}
         />
       </View>
+      <View style={{flex:1}}>
+          <AudioRecorder/>
+        </View>
     </SafeAreaView>
   );
 }
