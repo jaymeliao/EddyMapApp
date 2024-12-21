@@ -52,7 +52,7 @@ export default function HomePage() {
             <Icon name="delete" size={24} color="#ff6666" />
           </TouchableOpacity>
         </View>
-   
+
 
         <View style={styles.space_between}>
           <TouchableOpacity
@@ -82,9 +82,9 @@ export default function HomePage() {
           isAnnotationMode={isAnnotationMode}
         />
       </View>
-      <View style={{flex:1}}>
-          <AudioRecorder/>
-        </View>
+      <View style={{ flex: 1 }}>
+        <AudioRecorder />
+      </View>
     </SafeAreaView>
   );
 }
