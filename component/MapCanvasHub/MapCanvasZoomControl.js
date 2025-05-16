@@ -1,3 +1,11 @@
+
+/*
+v2: Navigation
+- Zoom in/out.
+- Pan (move the map).
+- Ability to switch back to drawing mode after zooming/panning.
+*/
+
 import React, { useState, forwardRef, useImperativeHandle } from "react";
 import {
   View,
@@ -18,15 +26,15 @@ const { height, width } = Dimensions.get("window");
 const MapSwitchableZoomableControlPanel = forwardRef(
   ({ currentImageIndex, isAnnotationMode }, ref) => {
     const images = [
-      require("../assets/floorplan1.png"),
-      require("../assets/T1.png"),
-      require("../assets/T2.png"),
-      require("../assets/T3.png"),
-      require("../assets/T4.png"),
-      require("../assets/T5.png"),
-      require("../assets/T6.png"),
-      require("../assets/T7.png"),
-      require("../assets/T8.png"),
+      require("../../assets/floorplan1.png"),
+      require("../../assets/T1.png"),
+      require("../../assets/T2.png"),
+      require("../../assets/T3.png"),
+      require("../../assets/T4.png"),
+      require("../../assets/T5.png"),
+      require("../../assets/T6.png"),
+      require("../../assets/T7.png"),
+      require("../../assets/T8.png"),
     ];
 
     const [currentPath, setCurrentPath] = useState("");
@@ -202,9 +210,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   zoomControls: {
-    // Place zoom buttons in an absolute position at the bottom of the screen
     position: "absolute",
-    zIndex: 2, // Ensure buttons are on top
+    zIndex: 2, 
     flexDirection: "row",
     justifyContent: "space-between",
     bottom: 50,

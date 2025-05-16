@@ -1,3 +1,8 @@
+
+/*
+v1: Basic Drawing
+Freehand drawing on the map canvas, Handles drawing logic, canvas rendering.
+*/
 import React, { useState } from 'react';
 import { View, PanResponder, Dimensions, Image, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
@@ -8,7 +13,7 @@ const MapCanvas = () => {
   const [currentPath, setCurrentPath] = useState(''); // Current freehand drawing path
   const [paths, setPaths] = useState([]); // Array to store all drawings
 
-  const formatCoordinate = (x, y) => `${x},${y}`; // Utility to format coordinates
+  const formatCoordinate = (x, y) => `${x},${y}`; 
 
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
@@ -47,14 +52,12 @@ const MapCanvas = () => {
       {/* Floor Plan Image */}
       <View style={styles.mapArea}>
         <Image
-          source={require('../assets/floorplan.jpg')} // Replace with your floor plan image
+          source={require('../../assets/floorplan.jpg')} 
           style={styles.floorPlan}
           resizeMode="contain"
         />
 
-        {/* SVG for drawing */}
         <Svg style={StyleSheet.absoluteFill}>
-          {/* Render all completed paths */}
           {paths.map((path, index) => (
             <Path
               key={index}
@@ -65,7 +68,6 @@ const MapCanvas = () => {
             />
           ))}
 
-          {/* Render the current freehand drawing path */}
           {currentPath && (
             <Path
               d={currentPath}
@@ -76,11 +78,8 @@ const MapCanvas = () => {
           )}
         </Svg>
 
-        {/* Drawing surface for touch gestures */}
         <View {...panResponder.panHandlers} style={styles.drawingOverlay} />
       </View>
-
-      {/* Clear Button */}
       <View style={styles.controlsContainer}>
         <TouchableOpacity style={styles.clearButton} onPress={clearAnnotations}>
           <Text style={styles.clearButtonText}>Clear Annotations</Text>

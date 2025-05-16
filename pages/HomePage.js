@@ -6,10 +6,10 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from "react-native";
-import MapSwitchableZoomableControlPanel from "../component/MapSwitchableZoomableControlPanel";
+import MapCanvas from "../component/MapCanvasHub/MapCanvasColorCustomSelector";
 import React, { useState, createRef } from "react";
 import { useTheme } from "react-native-paper";
-import Icon from "react-native-vector-icons/MaterialIcons"; // Choose your preferred icon library
+import Icon from "react-native-vector-icons/MaterialIcons"; 
 import AudioRecorder from "../component/AudioRecorder";
 
 
@@ -17,8 +17,6 @@ export default function HomePage() {
   const [isAnnotationMode, setIsAnnotationMode] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const controlPanelRef = createRef();
-
-  // Move useTheme inside the component
   const theme = useTheme();
 
   const toggleAnnotationMode = () => {
@@ -44,14 +42,14 @@ export default function HomePage() {
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
       <View style={styles.controlArea}>
-        <View style={styles.float_right}>
           <TouchableOpacity
             style={styles.clearButton}
             onPress={clearAnnotations}
           >
             <Icon name="delete" size={24} color="#ff6666" />
           </TouchableOpacity>
-        </View>
+
+      
 
 
         <View style={styles.space_between}>
@@ -76,7 +74,7 @@ export default function HomePage() {
       </View>
 
       <View style={styles.mapArea}>
-        <MapSwitchableZoomableControlPanel
+        <MapCanvas
           ref={controlPanelRef}
           currentImageIndex={currentImageIndex}
           isAnnotationMode={isAnnotationMode}
