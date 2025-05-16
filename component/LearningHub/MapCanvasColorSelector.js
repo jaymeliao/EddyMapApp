@@ -1,4 +1,4 @@
-/*v3: Color Selection
+/*v3.1: Color Selection
 Choose from a set of predefined colors for drawing.
 */
 import React, { useState, forwardRef, useImperativeHandle } from "react";

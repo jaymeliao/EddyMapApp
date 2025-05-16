@@ -1,26 +1,25 @@
+//to test, please make sure update the image path of the PNG file , check the codes
+
 import {
   StyleSheet,
   View,
+  Text,
   Button,
   TouchableOpacity,
   SafeAreaView,
 } from "react-native";
-import MapCanvas from "../component/MapCanvas";
-import React, { useState, useRef } from "react";
+import MapCanvas from "../component/MapCanvasHub/MapCanvasColorCustomSelector";
+import React, { useState, createRef } from "react";
 import { useTheme } from "react-native-paper";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import Icon from "react-native-vector-icons/MaterialIcons"; 
 import AudioRecorder from "../component/AudioRecorder";
-import ZoomScales from "../component/ZoomScales";
-import ColorPicker from "../component/ColorPicker";
-import ControlsBar from "../component/ControlsBar";
+
 
 export default function HomePage() {
   const [isAnnotationMode, setIsAnnotationMode] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const mapRef = useRef(null);
+  const controlPanelRef = createRef();
   const theme = useTheme();
-
-  const [selectedColor, setSelectedColor] = useState("blue");
 
   const toggleAnnotationMode = () => {
     setIsAnnotationMode((prevMode) => !prevMode);
@@ -35,8 +34,8 @@ export default function HomePage() {
   };
 
   const clearAnnotations = () => {
-    if (mapRef.current) {
-      mapRef.current.clearAnnotations();
+    if (controlPanelRef.current) {
+      controlPanelRef.current.clearAnnotations();
     }
   };
 
@@ -45,12 +44,21 @@ export default function HomePage() {
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
       <View style={styles.controlArea}>
-        <TouchableOpacity style={styles.clearButton} onPress={clearAnnotations}>
-          <Icon name="delete" size={24} color="#ff6666" />
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.clearButton}
+            onPress={clearAnnotations}
+          >
+            <Icon name="delete" size={24} color="#ff6666" />
+          </TouchableOpacity>
+
+      
+
 
         <View style={styles.space_between}>
-          <TouchableOpacity style={styles.button} onPress={switchToPreviousImage}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={switchToPreviousImage}
+          >
             <Icon name="arrow-back" size={30} color="#000" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={switchToNextImage}>
@@ -58,6 +66,7 @@ export default function HomePage() {
           </TouchableOpacity>
         </View>
 
+        {/* Annotation Mode Toggle */}
         <View style={styles.annotationMode}>
           <Button
             title={isAnnotationMode ? "Switch to Move" : "Switch to Annotate"}
@@ -68,24 +77,11 @@ export default function HomePage() {
 
       <View style={styles.mapArea}>
         <MapCanvas
-          ref={mapRef}
+          ref={controlPanelRef}
           currentImageIndex={currentImageIndex}
           isAnnotationMode={isAnnotationMode}
-          selectedColor={selectedColor}
         />
-
-        {/* Zoom, ColorPicker and Undo buttons positioned on top */}
-        <ZoomScales
-          zoomIn={() => mapRef.current?.zoomIn()}
-          zoomOut={() => mapRef.current?.zoomOut()}
-        />
-        <ColorPicker
-          selectedColor={selectedColor}
-          setSelectedColor={setSelectedColor}
-        />
-        <ControlsBar undo={() => mapRef.current?.undoLastPath()} />
       </View>
-
       <View style={{ flex: 1 }}>
         <AudioRecorder />
       </View>
@@ -99,16 +95,17 @@ const styles = StyleSheet.create({
   },
   controlArea: {
     zIndex: 3,
-    paddingHorizontal: 10,
-    paddingTop: 10,
   },
   space_between: {
     justifyContent: "space-between",
     flexDirection: "row",
-    marginVertical: 10,
   },
   mapArea: {
     flex: 1,
+  },
+
+  float_right: {
+    justifyContent: "flex-end",
   },
   clearButton: {
     backgroundColor: "#000",
@@ -116,12 +113,5 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 8,
-  },
-  button: {
-    padding: 10,
-  },
-  annotationMode: {
-    marginTop: 10,
   },
 });
