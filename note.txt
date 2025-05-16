@@ -1,1 +1,10 @@
- color:"#1f60ac"
+>export env REACT_NATIVE_PACKAGER_HOSTNAME=<your ip>
+>npx expo start
+
+
+npx expo start --host lan
+npx expo start --host tunnel
+這會使用 Expo 的雲端 relay server，即使手機不在同一網段也能連線（速度稍慢）。
+
+
+EXPO_DEVTOOLS_HOST=192.168.18.4 npx expo start --host lan
