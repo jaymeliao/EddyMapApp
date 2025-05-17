@@ -1,17 +1,11 @@
 import {
   StyleSheet,
   View,
-  Button,
-  TouchableOpacity,
   SafeAreaView,
 } from "react-native";
 import MapCanvas from "../component/MapCanvas";
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { useTheme } from "react-native-paper";
-import Icon from "react-native-vector-icons/MaterialIcons";
-import AudioRecorder from "../component/AudioRecorder";
-import ZoomScales from "../component/ZoomScales";
-import ColorPicker from "../component/ColorPicker";
 import ControlsBar from "../component/ControlsBar";
 
 export default function HomePage() {
@@ -40,88 +34,33 @@ export default function HomePage() {
     }
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      display: 'flex',
+      flex: 1,
+    },
+    mapCanvas: {
+      backgroundColor: theme.colors.background,
+      flex: 1,
+    },
+  });
+
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: theme.colors.background }]}
-    >
-      <View style={styles.controlArea}>
-        <TouchableOpacity style={styles.clearButton} onPress={clearAnnotations}>
-          <Icon name="delete" size={24} color="#ff6666" />
-        </TouchableOpacity>
-
-        <View style={styles.space_between}>
-          <TouchableOpacity style={styles.button} onPress={switchToPreviousImage}>
-            <Icon name="arrow-back" size={30} color="#000" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={switchToNextImage}>
-            <Icon name="arrow-forward" size={30} color="#000" />
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.annotationMode}>
-          <Button
-            title={isAnnotationMode ? "Switch to Move" : "Switch to Annotate"}
-            onPress={toggleAnnotationMode}
-          />
-        </View>
-      </View>
-
-      <View style={styles.mapArea}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <View style={styles.mapCanvas}>
         <MapCanvas
           ref={mapRef}
           currentImageIndex={currentImageIndex}
           isAnnotationMode={isAnnotationMode}
           selectedColor={selectedColor}
         />
-
-        {/* Zoom, ColorPicker and Undo buttons positioned on top */}
-        <ZoomScales
-          zoomIn={() => mapRef.current?.zoomIn()}
-          zoomOut={() => mapRef.current?.zoomOut()}
+        <ControlsBar
+          undo={() => mapRef.current?.undoLastPath()}
+          clearAnnotations={clearAnnotations}
+          switchToPreviousImage={switchToPreviousImage}
+          switchToNextImage={switchToNextImage}
         />
-        <ColorPicker
-          selectedColor={selectedColor}
-          setSelectedColor={setSelectedColor}
-        />
-        <ControlsBar undo={() => mapRef.current?.undoLastPath()} />
-      </View>
-
-      <View style={{ flex: 1 }}>
-        <AudioRecorder />
       </View>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  controlArea: {
-    zIndex: 3,
-    paddingHorizontal: 10,
-    paddingTop: 10,
-  },
-  space_between: {
-    justifyContent: "space-between",
-    flexDirection: "row",
-    marginVertical: 10,
-  },
-  mapArea: {
-    flex: 1,
-  },
-  clearButton: {
-    backgroundColor: "#000",
-    width: 50,
-    height: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 8,
-  },
-  button: {
-    padding: 10,
-  },
-  annotationMode: {
-    marginTop: 10,
-  },
-});

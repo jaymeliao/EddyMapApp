@@ -1,10 +1,13 @@
-import { StyleSheet, View, Button } from "react-native";
-import React from "react";
+import { StyleSheet} from "react-native";
+
 import HomePage from "./pages/HomePage";
 import {
   MD3LightTheme as DefaultTheme,
   PaperProvider,
 } from "react-native-paper";
+
+import AppHeader from "./component/AppHeader";
+
 
 const lightMode = {
   colors: {
@@ -24,7 +27,7 @@ const lightMode = {
     onError: "rgb(255, 255, 255)",
     errorContainer: "rgb(255, 218, 214)",
     onErrorContainer: "rgb(65, 0, 2)",
-    background: "rgb(255, 255, 255)",
+    background: "rgba(255, 255, 255, 0.82)",
     onBackground: "rgb(29, 27, 30)",
     surface: "rgb(255, 251, 255)",
     onSurface: "rgb(29, 27, 30)",
@@ -61,6 +64,7 @@ const theme = {
 export default function App() {
   return (
     <PaperProvider theme={theme}>
+      <AppHeader />
       <HomePage />
     </PaperProvider>
   );

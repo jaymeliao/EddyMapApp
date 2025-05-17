@@ -50,7 +50,7 @@ const MapCanvas = forwardRef(({ currentImageIndex, isAnnotationMode, selectedCol
     onPanResponderMove: (evt, gestureState) => {
       if (isAnnotationMode) {
         const newX = gestureState.moveX;
-        const newY = gestureState.moveY - height * 0.3;
+        const newY = gestureState.moveY - height * 0.1;
         const newPoint = formatCoordinate(newX, newY);
         if (currentPath === "") {
           setCurrentPath(`M${newPoint}`);

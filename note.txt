@@ -1,4 +1,6 @@
->export env REACT_NATIVE_PACKAGER_HOSTNAME=<your ip>
+> export env REACT_NATIVE_PACKAGER_HOSTNAME=<your ip>
+or use
+> export REACT_NATIVE_PACKAGER_HOSTNAME=$(ipconfig | findstr "IPv4" | awk -F: '{print $2}' | tr -d ' ')
 >npx expo start
 
 
