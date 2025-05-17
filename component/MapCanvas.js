@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, useImperativeHandle } from "react";
+import React, { useState, forwardRef, useImperativeHandle, useRef } from "react";
 import { View, Image, StyleSheet, Dimensions, PanResponder } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
@@ -23,6 +23,10 @@ const MapCanvas = forwardRef(({ currentImageIndex, isAnnotationMode, selectedCol
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [offset, setOffset] = useState({ x: 0, y: 0 });
 
+  // This ref is for measuring the Image position on screen
+  const imageRef = useRef(null);
+  const [imageBounds, setImageBounds] = useState({ x: 0, y: 0, width: 0, height: 0 });
+
   useImperativeHandle(ref, () => ({
     clearAnnotations: () => {
       setPaths([]);
@@ -45,13 +49,36 @@ const MapCanvas = forwardRef(({ currentImageIndex, isAnnotationMode, selectedCol
 
   const lerp = (start, end, t) => start * (1 - t) + end * t;
 
+  // Measure image position on layout
+  const onImageLayout = () => {
+    if (imageRef.current) {
+      imageRef.current.measureInWindow((x, y, w, h) => {
+        setImageBounds({ x, y, width: w, height: h });
+      });
+    }
+  };
+
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onPanResponderMove: (evt, gestureState) => {
+      const moveX = gestureState.moveX;
+      const moveY = gestureState.moveY;
+
       if (isAnnotationMode) {
-        const newX = gestureState.moveX;
-        const newY = gestureState.moveY - height * 0.1;
-        const newPoint = formatCoordinate(newX, newY);
+        // Check if touch is within image bounds (strict)
+        const { x, y, width: w, height: h } = imageBounds;
+        const withinX = moveX >= x && moveX <= x + w;
+        const withinY = moveY >= y && moveY <= y + h;
+        if (!withinX || !withinY) {
+          // Ignore drawing outside image
+          return;
+        }
+
+        // Convert screen coords to image local coords
+        const localX = (moveX - x) / scale;
+        const localY = (moveY - y) / scale;
+
+        const newPoint = formatCoordinate(localX, localY);
         if (currentPath === "") {
           setCurrentPath(`M${newPoint}`);
         } else {
@@ -94,6 +121,7 @@ const MapCanvas = forwardRef(({ currentImageIndex, isAnnotationMode, selectedCol
   return (
     <View style={styles.container}>
       <Image
+        ref={imageRef}
         source={images[currentImageIndex]}
         style={[
           {
@@ -103,6 +131,7 @@ const MapCanvas = forwardRef(({ currentImageIndex, isAnnotationMode, selectedCol
           },
         ]}
         resizeMode="contain"
+        onLayout={onImageLayout}
       />
 
       <Svg style={StyleSheet.absoluteFill}>

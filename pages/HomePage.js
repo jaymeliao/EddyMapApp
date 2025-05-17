@@ -7,7 +7,8 @@ import MapCanvas from "../component/MapCanvas";
 import { useState, useRef } from "react";
 import { useTheme } from "react-native-paper";
 import ControlsBar from "../component/ControlsBar";
-
+import ZoomScales from "../component/ZoomScales";
+import ColorPicker from "../component/ColorPicker";
 export default function HomePage() {
   const [isAnnotationMode, setIsAnnotationMode] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -42,6 +43,7 @@ export default function HomePage() {
     mapCanvas: {
       backgroundColor: theme.colors.background,
       flex: 1,
+      display: 'flex',
     },
   });
 
@@ -54,13 +56,21 @@ export default function HomePage() {
           isAnnotationMode={isAnnotationMode}
           selectedColor={selectedColor}
         />
-        <ControlsBar
-          undo={() => mapRef.current?.undoLastPath()}
-          clearAnnotations={clearAnnotations}
-          switchToPreviousImage={switchToPreviousImage}
-          switchToNextImage={switchToNextImage}
-        />
       </View>
+      <ControlsBar
+        undo={() => mapRef.current?.undoLastPath()}
+        clearAnnotations={clearAnnotations}
+        switchToPreviousImage={switchToPreviousImage}
+        switchToNextImage={switchToNextImage}
+      />
+            <ZoomScales
+          zoomIn={() => mapRef.current?.zoomIn()}
+          zoomOut={() => mapRef.current?.zoomOut()}
+        />
+        <ColorPicker
+          selectedColor={selectedColor}
+          setSelectedColor={setSelectedColor}
+        />
     </SafeAreaView>
   );
 }
