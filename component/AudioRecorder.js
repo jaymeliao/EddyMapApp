@@ -104,27 +104,26 @@ const AudioRecorder = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.hStack}>
-        {recording ?
-          (<TouchableOpacity onPress={stopRecording} style={{ padding: 10 }}>
-            <Icon name="stop" size={30} color="#ff6666" />
-          </TouchableOpacity>) :
-          (<TouchableOpacity onPress={startRecording} style={{ padding: 10 }}>
-            <Icon name="mic" size={30} color="#000" />
-          </TouchableOpacity>)}
+      {recording ?
+        (<TouchableOpacity onPress={stopRecording} style={{ padding: 10 }}>
+          <Icon name="stop" size={30} color="#ff6666" />
+        </TouchableOpacity>) :
+        (<TouchableOpacity onPress={startRecording} style={{ padding: 10 }}>
+          <Icon name="mic" size={30} color="#000" />
+        </TouchableOpacity>)}
 
 
-        <TouchableOpacity
-          onPress={playSound}
-          style={{ padding: 10, opacity: recordingUri ? 1 : 0.3 }}
-        >
-          <Icon
-            name="play-arrow"
-            size={30}
-            color={recordingUri ? "#000" : "#888"}
-          />
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        onPress={playSound}
+        style={{ padding: 10, opacity: recordingUri ? 1 : 0.3 }}
+      >
+        <Icon
+          name="play-arrow"
+          size={30}
+          color={recordingUri ? "#000" : "#888"}
+        />
+      </TouchableOpacity>
+
       <TouchableOpacity
         onPress={clearRecording}
         disabled={!recordingUri}
@@ -134,32 +133,29 @@ const AudioRecorder = () => {
           paddingHorizontal: 20,
           borderRadius: 8,
           alignItems: 'center',
-          marginTop: 10,
         }}
       >
         <Text style={{ color: recordingUri ? 'red' : '#888', fontWeight: 'bold' }}>
-          Clear Recording
+          Clear Voice
         </Text>
       </TouchableOpacity>
 
-      {recordingUri && <Text>voice saved</Text>}
-
+      {/* {recordingUri && <Text>voice saved</Text>} */}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
-    flexDirection: "column",
-    padding: 20,
-  },
-  hStack: {
+    paddingRight: 10,
+    paddingLeft: 10,
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     alignItems: "center",
+    zIndex: 100,
   },
+
 
 });
 

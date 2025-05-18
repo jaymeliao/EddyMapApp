@@ -40,7 +40,7 @@ const HomePage = () => {
 
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: "white" }]} >
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]} >
       <ControlsBar
         undo={() => canvasRef.current?.undoLastPath()}
         clearAnnotations={() => canvasRef.current?.clearAnnotations()}

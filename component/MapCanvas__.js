@@ -283,7 +283,8 @@ const MapCanvas = forwardRef((props, ref) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: 'blue',
+    justifyContent: 'flex-start',
   },
   svgContainer: {
     flex: 1,
