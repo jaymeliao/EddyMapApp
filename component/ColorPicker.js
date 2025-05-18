@@ -6,11 +6,8 @@ const ColorPicker = ({ selectedColor, setSelectedColor }) => {
   const colors = ["blue", "red", "green", "orange", "black"];
 
   return (
-    <View style={styles.colorSelectorContainer}>
-      <TouchableOpacity
-        style={[styles.currentColorButton, { backgroundColor: selectedColor }]}
-        onPress={() => setShowPicker(!showPicker)}
-      />
+    <View style={styles.container}>
+
       {showPicker && (
         <View style={styles.colorPickerPopover}>
           {colors.map((color) => (
@@ -29,18 +26,24 @@ const ColorPicker = ({ selectedColor, setSelectedColor }) => {
           ))}
         </View>
       )}
+      <TouchableOpacity
+        style={[styles.currentColorButton, { backgroundColor: selectedColor }]}
+        onPress={() => setShowPicker(!showPicker)}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  colorSelectorContainer: {
+  container: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
     position: "absolute",
-    top: 70,
+    bottom:60,
     right: 10,
-    alignItems: "flex-end",
-    zIndex: 9,
   },
+
   currentColorButton: {
     width: 40,
     height: 40,
@@ -49,12 +52,12 @@ const styles = StyleSheet.create({
     borderColor: "#333",
   },
   colorPickerPopover: {
-    marginTop: 8,
-    backgroundColor: "#fff",
-    padding: 6,
-    borderRadius: 10,
+    backgroundColor: "#f2f2f2",
+    borderRadius: 50,
     elevation: 5,
     flexDirection: "row",
+    padding: 5 ,
+    marginRight: 10,
   },
   colorCircle: {
     width: 30,

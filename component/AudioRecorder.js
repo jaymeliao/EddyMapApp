@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { View, Button, StyleSheet, Text, Alert } from "react-native";
+import { View, Button, StyleSheet, Text, Alert, TouchableOpacity } from "react-native";
 import { Audio } from "expo-av";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 const AudioRecorder = () => {
   const [recording, setRecording] = useState(null);
   const [sound, setSound] = useState(null);
   const [recordingUri, setRecordingUri] = useState(null);
 
-  // Cleanup sound resource when the component unmounts or sound is replaced
   useEffect(() => {
     return () => {
       if (sound) {
@@ -26,7 +26,7 @@ const AudioRecorder = () => {
         Alert.alert("Permission Denied", "Permission to access microphone is required!");
         return;
       }
-  
+
       console.log("Setting audio mode...");
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: true,
@@ -36,7 +36,7 @@ const AudioRecorder = () => {
         shouldDuckAndroid: true,
         playThroughEarpieceAndroid: false,
       });
-  
+
       console.log("Starting recording...");
       const { recording } = await Audio.Recording.createAsync(
         Audio.RecordingOptionsPresets.HIGH_QUALITY
@@ -47,7 +47,7 @@ const AudioRecorder = () => {
       console.error("Failed to start recording", error);
     }
   };
-  
+
 
   // Stop recording audio
   const stopRecording = async () => {
@@ -74,7 +74,6 @@ const AudioRecorder = () => {
     }
 
     try {
-      console.log("Playing sound...");
       const { sound } = await Audio.Sound.createAsync({ uri: recordingUri });
       setSound(sound);
       await sound.playAsync();
@@ -87,7 +86,6 @@ const AudioRecorder = () => {
   const stopSound = async () => {
     if (sound) {
       try {
-        console.log("Stopping sound...");
         await sound.stopAsync();
         await sound.unloadAsync();
         setSound(null);
@@ -106,29 +104,63 @@ const AudioRecorder = () => {
 
   return (
     <View style={styles.container}>
-      <Button
-        title={recording ? "Stop Recording" : "Start Recording"}
-        onPress={recording ? stopRecording : startRecording}
-      />
-      <Button title="Play Recording" onPress={playSound} disabled={!recordingUri} />
-      <Button title="Clear Recording" onPress={clearRecording} disabled={!recordingUri} />
-      {recordingUri && <Text style={styles.text}>Recording saved at: {recordingUri}</Text>}
+      <View style={styles.hStack}>
+        {recording ?
+          (<TouchableOpacity onPress={stopRecording} style={{ padding: 10 }}>
+            <Icon name="stop" size={30} color="#ff6666" />
+          </TouchableOpacity>) :
+          (<TouchableOpacity onPress={startRecording} style={{ padding: 10 }}>
+            <Icon name="mic" size={30} color="#000" />
+          </TouchableOpacity>)}
+
+
+        <TouchableOpacity
+          onPress={playSound}
+          style={{ padding: 10, opacity: recordingUri ? 1 : 0.3 }}
+        >
+          <Icon
+            name="play-arrow"
+            size={30}
+            color={recordingUri ? "#000" : "#888"}
+          />
+        </TouchableOpacity>
+      </View>
+      <TouchableOpacity
+        onPress={clearRecording}
+        disabled={!recordingUri}
+        style={{
+          backgroundColor: recordingUri ? '#ffcccc' : '#dddddd',
+          paddingVertical: 12,
+          paddingHorizontal: 20,
+          borderRadius: 8,
+          alignItems: 'center',
+          marginTop: 10,
+        }}
+      >
+        <Text style={{ color: recordingUri ? 'red' : '#888', fontWeight: 'bold' }}>
+          Clear Recording
+        </Text>
+      </TouchableOpacity>
+
+      {recordingUri && <Text>voice saved</Text>}
+
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    display: "flex",
+    flexDirection: "column",
     padding: 20,
   },
-  text: {
-    marginTop: 10,
-    fontSize: 16,
-    textAlign: "center",
+  hStack: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
+
 });
 
 export default AudioRecorder;

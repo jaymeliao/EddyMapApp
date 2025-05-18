@@ -1,11 +1,22 @@
 import React, { useState, forwardRef, useImperativeHandle, useRef } from "react";
 import { View, Image, StyleSheet, Dimensions, PanResponder } from "react-native";
+import { ZoomIn } from "react-native-reanimated";
 import Svg, { Path } from "react-native-svg";
 
-const { width, height } = Dimensions.get("window");
+const { height, width } = Dimensions.get("window");
 
-const MapCanvas = forwardRef(({ currentImageIndex, isAnnotationMode, selectedColor, images }, ref) => {
-
+const MapCanvas = forwardRef(({ currentImageIndex, isAnnotationMode, selectedColor }, ref) => {
+  const images = [
+    require("../assets/floorplan1.png"),
+    require("../assets/T1.png"),
+    require("../assets/T2.png"),
+    require("../assets/T3.png"),
+    require("../assets/T4.png"),
+    require("../assets/T5.png"),
+    require("../assets/T6.png"),
+    require("../assets/T7.png"),
+    require("../assets/T8.png"),
+  ];
 
   const [paths, setPaths] = useState([]);
   const [currentPath, setCurrentPath] = useState("");
@@ -21,14 +32,19 @@ const MapCanvas = forwardRef(({ currentImageIndex, isAnnotationMode, selectedCol
       setCurrentPath("");
     },
     undoLastPath: () => {
-      setPaths(prev => prev.slice(0, -1));
+      setPaths((prev) => prev.slice(0, -1));
     },
+    // zoomIn: () => setScale((prev) => Math.min(prev * 1.2, 3)),
+    // zoomOut: () => setScale((prev) => Math.max(prev * 0.8, 1)),
     zoomIn: () => {
-      setScale(prev => Math.min(prev * 1.2, 3));
+      console.log("Zooming in");
+      setScale((prev) => Math.min(prev * 1.2, 3));
     },
+        // zoomOut: () => setScale((prev) => Math.max(prev * 0.8, 1)),
     zoomOut: () => {
-      setScale(prev => Math.max(prev * 0.8, 1));
-    },
+      console.log("Zooming out");
+      setScale((prev) => prev * 0.8);
+    }
   }));
 
   const onImageLayout = () => {
@@ -44,35 +60,51 @@ const MapCanvas = forwardRef(({ currentImageIndex, isAnnotationMode, selectedCol
     onMoveShouldSetPanResponder: () => true,
     onPanResponderGrant: (evt) => {
       if (!isAnnotationMode) return;
-
+      
       const { locationX, locationY } = evt.nativeEvent;
-      const { width: w, height: h } = imageBounds;
+      const { x, y, width: w, height: h } = imageBounds;
+      
+      // Check if touch is within image bounds
       if (locationX >= 0 && locationX <= w && locationY >= 0 && locationY <= h) {
-        setCurrentPath(`M${locationX},${locationY}`);
+        const newPoint = `${locationX},${locationY}`;
+        setCurrentPath(`M${newPoint}`);
       }
     },
     onPanResponderMove: (evt, gestureState) => {
       if (!isAnnotationMode) {
-        const dx = gestureState.dx / scale;
-        const dy = gestureState.dy / scale;
-        const scaledWidth = width * scale;
-        const scaledHeight = height * scale;
+        // Handle panning logic
+        const scaledDx = gestureState.dx / scale;
+        const scaledDy = gestureState.dy / scale;
+        
+        const { scaledWidth, scaledHeight } = {
+          scaledWidth: width * scale,
+          scaledHeight: height * scale
+        };
 
-        const newX = Math.min(Math.max(dx + offset.x, -(scaledWidth - width) / 2), (scaledWidth - width) / 2);
-        const newY = Math.min(Math.max(dy + offset.y, -(scaledHeight - height) / 2), (scaledHeight - height) / 2);
+        const targetX = scaledDx + offset.x;
+        const targetY = scaledDy + offset.y;
 
-        setPan({ x: newX, y: newY });
+        const maxX = Math.max(0, (scaledWidth - width) / 2);
+        const maxY = Math.max(0, (scaledHeight - height) / 2);
+
+        setPan({
+          x: Math.min(Math.max(targetX, -maxX), maxX),
+          y: Math.min(Math.max(targetY, -maxY), maxY),
+        });
         return;
       }
 
       const { locationX, locationY } = evt.nativeEvent;
       const { width: w, height: h } = imageBounds;
-
+      
       if (locationX >= 0 && locationX <= w && locationY >= 0 && locationY <= h) {
-        setCurrentPath(prev => prev ? `${prev} L${locationX},${locationY}` : `M${locationX},${locationY}`);
-      } else if (currentPath) {
-        setPaths(prev => [...prev, { path: currentPath, color: selectedColor }]);
-        setCurrentPath("");
+        const newPoint = `${locationX},${locationY}`;
+        setCurrentPath(prev => prev ? `${prev} L${newPoint}` : `M${newPoint}`);
+      } else {
+        if (currentPath) {
+          setPaths(prev => [...prev, { path: currentPath, color: selectedColor }]);
+          setCurrentPath("");
+        }
       }
     },
     onPanResponderRelease: () => {
@@ -93,18 +125,14 @@ const MapCanvas = forwardRef(({ currentImageIndex, isAnnotationMode, selectedCol
         style={[
           styles.image,
           {
-            transform: [
-              { scale },
-              { translateX: pan.x },
-              { translateY: pan.y },
-            ],
+            transform: [{ scale }, { translateX: pan.x }, { translateY: pan.y }],
           },
         ]}
         resizeMode="contain"
         onLayout={onImageLayout}
       />
 
-      <Svg style={StyleSheet.absoluteFill} pointerEvents="none">
+      <Svg style={[StyleSheet.absoluteFill, styles.svgOverlay]}>
         {paths.map((item, index) => (
           <Path
             key={index}
@@ -119,7 +147,7 @@ const MapCanvas = forwardRef(({ currentImageIndex, isAnnotationMode, selectedCol
         )}
       </Svg>
 
-      <View {...panResponder.panHandlers} style={StyleSheet.absoluteFill} />
+      <View {...panResponder.panHandlers} style={styles.touchOverlay} />
     </View>
   );
 });
@@ -127,11 +155,16 @@ const MapCanvas = forwardRef(({ currentImageIndex, isAnnotationMode, selectedCol
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   image: {
     width: '100%',
     height: '100%',
+  },
+  svgOverlay: {
+    pointerEvents: 'none',
+  },
+  touchOverlay: {
+    ...StyleSheet.absoluteFillObject,
   },
 });
 

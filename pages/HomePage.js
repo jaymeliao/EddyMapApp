@@ -1,76 +1,78 @@
-import {
-  StyleSheet,
-  View,
-  SafeAreaView,
-} from "react-native";
-import MapCanvas from "../component/MapCanvas";
-import { useState, useRef } from "react";
+import React, { useRef, useState } from 'react';
+import { View, Button, StyleSheet, SafeAreaView, Text, TouchableOpacity } from 'react-native';
+import MapCanvas from '../component/MapCanvas';
 import { useTheme } from "react-native-paper";
 import ControlsBar from "../component/ControlsBar";
-import ZoomScales from "../component/ZoomScales";
 import ColorPicker from "../component/ColorPicker";
-export default function HomePage() {
-  const [isAnnotationMode, setIsAnnotationMode] = useState(true);
+import AudioRecorder from "../component/AudioRecorder";
+
+
+const HomePage = () => {
+
+  const images = [
+    require("../assets/floorplan1.png"),
+    require("../assets/T1.png"),
+    require("../assets/T2.png"),
+    require("../assets/T3.png"),
+    require("../assets/T4.png"),
+    require("../assets/T5.png"),
+    require("../assets/T6.png"),
+    require("../assets/T7.png"),
+    require("../assets/T8.png"),
+  ];
+
+  const canvasRef = useRef();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const mapRef = useRef(null);
+  const [isAnnotationMode, setIsAnnotationMode] = useState(true);
+  const [selectedColor, setSelectedColor] = useState('#0000FF');
   const theme = useTheme();
-
-  const [selectedColor, setSelectedColor] = useState("blue");
-
-  const toggleAnnotationMode = () => {
-    setIsAnnotationMode((prevMode) => !prevMode);
-  };
+  const imageCount = images.length;
 
   const switchToNextImage = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % 9);
+    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imageCount);
   };
-
   const switchToPreviousImage = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex - 1 + 9) % 9);
+    setCurrentImageIndex((prevIndex) => (prevIndex - 1 + 9) % imageCount);
+  };
+  const toggleAnnotationMode = () => {
+    setIsAnnotationMode((prev) => !prev);
   };
 
-  const clearAnnotations = () => {
-    if (mapRef.current) {
-      mapRef.current.clearAnnotations();
-    }
-  };
-
-  const styles = StyleSheet.create({
-    container: {
-      display: 'flex',
-      flex: 1,
-    },
-    mapCanvas: {
-      backgroundColor: theme.colors.background,
-      flex: 1,
-      display: 'flex',
-    },
-  });
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <View style={styles.mapCanvas}>
-        <MapCanvas
-          ref={mapRef}
-          currentImageIndex={currentImageIndex}
-          isAnnotationMode={isAnnotationMode}
-          selectedColor={selectedColor}
-        />
-      </View>
+    <SafeAreaView style={[styles.container, { backgroundColor: "white" }]} >
       <ControlsBar
-        undo={() => mapRef.current?.undoLastPath()}
-        clearAnnotations={clearAnnotations}
+        undo={() => canvasRef.current?.undoLastPath()}
+        clearAnnotations={() => canvasRef.current?.clearAnnotations()}
         switchToPreviousImage={switchToPreviousImage}
         switchToNextImage={switchToNextImage}
+        zoomIn={() => canvasRef.current?.zoomIn()}
+        zoomOut={() => canvasRef.current?.zoomOut()}
+        toggleAnnotationMode={toggleAnnotationMode}
+        isAnnotationMode={isAnnotationMode}
+
       />
-            <ZoomScales
-          zoomIn={() => mapRef.current?.zoomIn()}
-          zoomOut={() => mapRef.current?.zoomOut()}
-        />
-        <ColorPicker
-          selectedColor={selectedColor}
-          setSelectedColor={setSelectedColor}
-        />
-    </SafeAreaView>
+      <AudioRecorder />
+      <MapCanvas
+        ref={canvasRef}
+        currentImageIndex={currentImageIndex}
+        isAnnotationMode={isAnnotationMode}
+        selectedColor={selectedColor}
+        images={images}
+      />
+      <ColorPicker
+        selectedColor={selectedColor}
+        setSelectedColor={setSelectedColor}
+      />
+
+    </SafeAreaView >
   );
-}
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
+
+export default HomePage;

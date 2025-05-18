@@ -1,9 +1,27 @@
-import React from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
-
-const ControlsBar = ({ undo, clearAnnotations, switchToPreviousImage , switchToNextImage}) => (
+import ZoomScales from "./ZoomScales";
+const ControlsBar = ({ undo, clearAnnotations, switchToPreviousImage, switchToNextImage, zoomIn, zoomOut, toggleAnnotationMode, isAnnotationMode }) => (
   <View style={styles.controlsBar}>
+    {
+      isAnnotationMode ? (
+        <TouchableOpacity onPress={toggleAnnotationMode} style={styles.button}>
+          <Icon name="edit" size={30} color="#000" />
+        </TouchableOpacity>
+      ) : (
+
+        <TouchableOpacity onPress={toggleAnnotationMode} style={styles.button}>
+          <Icon name="swipe" size={30} color="#000" />
+        </TouchableOpacity>
+      )
+    }
+
+
+<View style={{display: "flex", flexDirection: "row", gap: 10}}>
+    <ZoomScales
+      zoomIn={zoomIn}
+      zoomOut={zoomOut}
+    />
     <TouchableOpacity onPress={undo} style={styles.button}>
       <Icon name="undo" size={30} color="#000" />
     </TouchableOpacity>
@@ -16,28 +34,27 @@ const ControlsBar = ({ undo, clearAnnotations, switchToPreviousImage , switchToN
     <TouchableOpacity style={styles.button} onPress={switchToNextImage}>
       <Icon name="arrow-forward" size={30} color="#000" />
     </TouchableOpacity>
-
+  </View>
   </View>
 );
 
 const styles = StyleSheet.create({
   controlsBar: {
-    position: "absolute",
-    bottom: 50,
-    right: 10,
-    zIndex: 9,
+    zIndex: 100,
+    display: "flex",
+    justifyContent: "space-between",
+    flexDirection: "row",
+    padding: 10,
+    gap: 15,
+
+  },
+  imageControls: {
+    display: "flex",
     flexDirection: "row",
   },
+
   button: {
-    padding: 10,
-  },
-  clearButton: {
-    backgroundColor: "#000",
-    width: 50,
-    height: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 8,
+    paddingTop: 10,
   },
 });
 

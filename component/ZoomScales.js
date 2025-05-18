@@ -15,10 +15,8 @@ const ZoomScales = ({ zoomIn, zoomOut }) => (
 
 const styles = StyleSheet.create({
   zoomControls: {
-    position: "absolute",
-    top: 10,
-    right: 10,
-    zIndex: 10,
+    disaplay: "flex",
+    justifyContent: "space-between",
     flexDirection: "row",
   },
   button: {
